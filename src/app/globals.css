@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap');
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  body {
+    @apply bg-gray-50 text-gray-900;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  .btn-primary {
+    @apply btn bg-gradient-to-r from-primary-600 to-primary-700 text-white hover:from-primary-700 hover:to-primary-800 focus:ring-primary-500 shadow-soft hover:shadow-medium;
+  }
+  
+  .btn-secondary {
+    @apply btn bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 focus:ring-primary-500 shadow-soft;
+  }
+  
+  .btn-success {
+    @apply btn bg-gradient-to-r from-success-600 to-success-700 text-white hover:from-success-700 hover:to-success-800 focus:ring-success-500 shadow-soft;
+  }
+  
+  .btn-warning {
+    @apply btn bg-gradient-to-r from-warning-600 to-warning-700 text-white hover:from-warning-700 hover:to-warning-800 focus:ring-warning-500 shadow-soft;
+  }
+  
+  .btn-error {
+    @apply btn bg-gradient-to-r from-error-600 to-error-700 text-white hover:from-error-700 hover:to-error-800 focus:ring-error-500 shadow-soft;
+  }
+  
+  .input {
+    @apply w-full px-4 py-3 text-sm border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200;
+  }
+  
+  .input-error {
+    @apply input border-error-300 focus:ring-error-500;
+  }
+  
+  .card {
+    @apply bg-white rounded-2xl shadow-soft border border-gray-100;
+  }
+  
+  .card-elevated {
+    @apply bg-white rounded-2xl shadow-medium border border-gray-100;
+  }
+  
+  .scratch-card {
+    @apply relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-500 via-primary-600 to-secondary-600 p-8 text-white;
+  }
+  
+  .scratch-surface {
+    @apply absolute inset-0 bg-gradient-to-br from-gray-300 to-gray-400 cursor-crosshair;
+  }
+  
+  .scratch-reveal {
+    @apply absolute inset-0 bg-gradient-to-br from-primary-500 via-primary-600 to-secondary-600 p-8 text-white;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent;
+  }
+  
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+  
+  .glass {
+    @apply bg-white/80 backdrop-blur-sm border border-white/20;
+  }
+  
+  .mobile-first {
+    @apply w-full max-w-sm mx-auto;
+  }
+  
+  @screen sm {
+    .mobile-first {
+      @apply max-w-md;
+    }
+  }
+  
+  @screen md {
+    .mobile-first {
+      @apply max-w-lg;
+    }
+  }
+  
+  @screen lg {
+    .mobile-first {
+      @apply max-w-2xl;
+    }
+  }
+}
