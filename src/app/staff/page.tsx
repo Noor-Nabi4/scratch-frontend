@@ -27,7 +27,7 @@ export default function StaffPortalPage() {
       const results = await staffService.searchPlay(searchQuery.trim())
       setSearchResults(results)
       if (results.length === 0) {
-        toast.info('No plays found matching your search')
+        toast('No plays found matching your search')
       }
     } catch (error) {
       toast.error('Search failed')

@@ -12,7 +12,7 @@ const api = axios.create({
 
 // Request interceptor for auth token
 api.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
+  (config) => {
     const token = localStorage.getItem('admin_token')
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`
