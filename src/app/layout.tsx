@@ -19,13 +19,19 @@ export const metadata: Metadata = {
   description: 'Mobile-first Scratch & Win web application with beautiful animations and fair gameplay.',
   keywords: ['scratch', 'win', 'game', 'mobile', 'prize'],
   authors: [{ name: 'Scratch & Win Team' }],
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
-  themeColor: '#0ea5e9',
   manifest: '/manifest.json',
   icons: {
     icon: '/favicon.ico',
     apple: '/apple-touch-icon.png',
   },
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: '#0ea5e9',
 }
 
 export default function RootLayout({

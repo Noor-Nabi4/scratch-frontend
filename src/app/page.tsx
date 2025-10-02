@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Sparkles, Gift, Smartphone } from 'lucide-react'
@@ -10,7 +10,7 @@ import ResultDisplay from '@/components/ResultDisplay'
 import { playService } from '@/services/playService'
 import { PlayResult } from '@/types/play'
 
-export default function HomePage() {
+function HomePageContent() {
   const searchParams = useSearchParams()
   const token = searchParams.get('token')
   
@@ -184,5 +184,20 @@ export default function HomePage() {
         </div>
       </footer>
     </div>
+  )
+}
+
+export default function HomePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-primary-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    }>
+      <HomePageContent />
+    </Suspense>
   )
 }
