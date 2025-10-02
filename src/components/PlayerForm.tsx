@@ -7,6 +7,7 @@ import { z } from 'zod'
 import { motion } from 'framer-motion'
 import { User, Phone, Mail, Calendar, CheckCircle, AlertCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
+import InputField from '@/components/ui/InputField'
 
 const playerSchema = z.object({
   token: z.string().min(1, 'Token is required'),
@@ -73,32 +74,18 @@ export default function PlayerForm({ token, onSubmit, isLoading }: PlayerFormPro
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
           exit={{ opacity: 0, height: 0 }}
-          className="space-y-2"
         >
-          <label htmlFor="token" className="block text-sm font-medium text-gray-700">
-            Game Token
-          </label>
-          <div className="relative">
-            <input
-              {...register('token')}
-              type="text"
-              id="token"
-              placeholder="Enter your game token"
-              className={`input ${errors.token ? 'input-error' : ''}`}
-              onChange={(e) => handleTokenChange(e.target.value)}
-            />
-            {errors.token && (
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                <AlertCircle className="w-5 h-5 text-error-500" />
-              </div>
-            )}
-          </div>
-          {errors.token && (
-            <p className="text-sm text-error-600 flex items-center gap-1">
-              <AlertCircle className="w-4 h-4" />
-              {errors.token.message}
-            </p>
-          )}
+          <InputField
+            {...register('token')}
+            type="text"
+            id="token"
+            label="Game Token"
+            placeholder="Enter your game token"
+            error={errors.token?.message}
+            disabled={isLoading}
+            helperText="Enter the token from your QR code or scratch card"
+            onChange={(e) => handleTokenChange(e.target.value)}
+          />
         </motion.div>
       )}
 
@@ -127,156 +114,73 @@ export default function PlayerForm({ token, onSubmit, isLoading }: PlayerFormPro
 
       {/* Name Fields */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
-            First Name *
-          </label>
-          <div className="relative">
-            <input
-              {...register('firstName')}
-              type="text"
-              id="firstName"
-              placeholder="Enter your first name"
-              className={`input ${errors.firstName ? 'input-error' : ''}`}
-            />
-            <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-              <User className="w-5 h-5 text-gray-400" />
-            </div>
-            {errors.firstName && (
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                <AlertCircle className="w-5 h-5 text-error-500" />
-              </div>
-            )}
-          </div>
-          {errors.firstName && (
-            <p className="text-sm text-error-600 flex items-center gap-1">
-              <AlertCircle className="w-4 h-4" />
-              {errors.firstName.message}
-            </p>
-          )}
-        </div>
+        <InputField
+          {...register('firstName')}
+          type="text"
+          id="firstName"
+          label="First Name *"
+          placeholder="Enter your first name"
+          leftIcon={<User className="w-5 h-5" />}
+          error={errors.firstName?.message}
+          disabled={isLoading}
+          autoComplete="given-name"
+        />
 
-        <div className="space-y-2">
-          <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
-            Last Name *
-          </label>
-          <div className="relative">
-            <input
-              {...register('lastName')}
-              type="text"
-              id="lastName"
-              placeholder="Enter your last name"
-              className={`input ${errors.lastName ? 'input-error' : ''}`}
-            />
-            <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-              <User className="w-5 h-5 text-gray-400" />
-            </div>
-            {errors.lastName && (
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                <AlertCircle className="w-5 h-5 text-error-500" />
-              </div>
-            )}
-          </div>
-          {errors.lastName && (
-            <p className="text-sm text-error-600 flex items-center gap-1">
-              <AlertCircle className="w-4 h-4" />
-              {errors.lastName.message}
-            </p>
-          )}
-        </div>
+        <InputField
+          {...register('lastName')}
+          type="text"
+          id="lastName"
+          label="Last Name *"
+          placeholder="Enter your last name"
+          leftIcon={<User className="w-5 h-5" />}
+          error={errors.lastName?.message}
+          disabled={isLoading}
+          autoComplete="family-name"
+        />
       </div>
 
       {/* Phone */}
-      <div className="space-y-2">
-        <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-          Phone Number *
-        </label>
-        <div className="relative">
-          <input
-            {...register('phone')}
-            type="tel"
-            id="phone"
-            placeholder="Enter your phone number"
-            className={`input ${errors.phone ? 'input-error' : ''}`}
-          />
-          <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-            <Phone className="w-5 h-5 text-gray-400" />
-          </div>
-          {errors.phone && (
-            <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-              <AlertCircle className="w-5 h-5 text-error-500" />
-            </div>
-          )}
-        </div>
-        {errors.phone && (
-          <p className="text-sm text-error-600 flex items-center gap-1">
-            <AlertCircle className="w-4 h-4" />
-            {errors.phone.message}
-          </p>
-        )}
-      </div>
+      <InputField
+        {...register('phone')}
+        type="tel"
+        id="phone"
+        label="Phone Number *"
+        placeholder="Enter your phone number"
+        leftIcon={<Phone className="w-5 h-5" />}
+        error={errors.phone?.message}
+        disabled={isLoading}
+        autoComplete="tel"
+        helperText="Include country code if international"
+      />
 
       {/* Email */}
-      <div className="space-y-2">
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-          Email Address *
-        </label>
-        <div className="relative">
-          <input
-            {...register('email')}
-            type="email"
-            id="email"
-            placeholder="Enter your email address"
-            className={`input ${errors.email ? 'input-error' : ''}`}
-          />
-          <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-            <Mail className="w-5 h-5 text-gray-400" />
-          </div>
-          {errors.email && (
-            <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-              <AlertCircle className="w-5 h-5 text-error-500" />
-            </div>
-          )}
-        </div>
-        {errors.email && (
-          <p className="text-sm text-error-600 flex items-center gap-1">
-            <AlertCircle className="w-4 h-4" />
-            {errors.email.message}
-          </p>
-        )}
-      </div>
+      <InputField
+        {...register('email')}
+        type="email"
+        id="email"
+        label="Email Address *"
+        placeholder="Enter your email address"
+        leftIcon={<Mail className="w-5 h-5" />}
+        error={errors.email?.message}
+        disabled={isLoading}
+        autoComplete="email"
+        helperText="We'll use this to contact you about your prize"
+      />
 
       {/* Age */}
-      <div className="space-y-2">
-        <label htmlFor="age" className="block text-sm font-medium text-gray-700">
-          Age *
-        </label>
-        <div className="relative">
-          <input
-            {...register('age', { valueAsNumber: true })}
-            type="number"
-            id="age"
-            min="18"
-            max="120"
-            placeholder="Enter your age"
-            className={`input ${errors.age ? 'input-error' : ''}`}
-          />
-          <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-            <Calendar className="w-5 h-5 text-gray-400" />
-          </div>
-          {errors.age && (
-            <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-              <AlertCircle className="w-5 h-5 text-error-500" />
-            </div>
-          )}
-        </div>
-        {errors.age && (
-          <p className="text-sm text-error-600 flex items-center gap-1">
-            <AlertCircle className="w-4 h-4" />
-            {errors.age.message}
-          </p>
-        )}
-      </div>
+      <InputField
+        {...register('age', { valueAsNumber: true })}
+        type="number"
+        id="age"
+        label="Age *"
+        placeholder="Enter your age"
+        leftIcon={<Calendar className="w-5 h-5" />}
+        error={errors.age?.message}
+        disabled={isLoading}
+        min={18}
+        max={120}
+        helperText="You must be 18 or older to participate"
+      />
 
       {/* Terms and Conditions */}
       <div className="space-y-2">

@@ -44,11 +44,23 @@
   }
   
   .input {
-    @apply w-full px-4 py-3 text-sm border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200;
+    @apply w-full h-11 px-4 py-3 text-sm bg-white border border-gray-300 rounded-lg font-medium transition-all duration-200 ease-in-out placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed;
   }
   
   .input-error {
-    @apply input border-error-300 focus:ring-error-500;
+    @apply input border-red-300 focus:ring-red-100 focus:border-red-500;
+  }
+
+  .input-with-left-icon {
+    @apply input pl-10;
+  }
+
+  .input-with-right-icon {
+    @apply input pr-10;
+  }
+
+  .input-with-both-icons {
+    @apply input pl-10 pr-10;
   }
   
   .card {

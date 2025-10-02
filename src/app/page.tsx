@@ -3,7 +3,8 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { Sparkles, Gift, Smartphone } from 'lucide-react'
+import { Sparkles, Gift, Smartphone, AlertCircle } from 'lucide-react'
+import toast from 'react-hot-toast'
 import PlayerForm from '@/components/PlayerForm'
 import ScratchCard from '@/components/ScratchCard'
 import ResultDisplay from '@/components/ResultDisplay'
@@ -17,6 +18,7 @@ function HomePageContent() {
   const [step, setStep] = useState<'form' | 'scratch' | 'result'>('form')
   const [playResult, setPlayResult] = useState<PlayResult | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!token) {
@@ -26,6 +28,8 @@ function HomePageContent() {
 
   const handlePlaySubmit = async (formData: any) => {
     setIsLoading(true)
+    setSubmitError(null) // Clear previous errors
+    
     try {
       const result = await playService.claimTokenAndPlay({
         ...formData,
@@ -36,6 +40,9 @@ function HomePageContent() {
       setStep('scratch')
     } catch (error) {
       console.error('Play submission failed:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Failed to submit. Please try again.'
+      setSubmitError(errorMessage)
+      toast.error(errorMessage)
     } finally {
       setIsLoading(false)
     }
@@ -48,6 +55,14 @@ function HomePageContent() {
   const handlePlayAgain = () => {
     setStep('form')
     setPlayResult(null)
+    setSubmitError(null)
+  }
+
+  // Clear error when user starts interacting with form
+  const handleFormChange = () => {
+    if (submitError) {
+      setSubmitError(null)
+    }
   }
 
   if (step === 'scratch' && playResult) {
@@ -137,11 +152,32 @@ function HomePageContent() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="card p-8"
           >
-            <PlayerForm
-              token={token}
-              onSubmit={handlePlaySubmit}
-              isLoading={isLoading}
-            />
+            {/* Error Display */}
+            {submitError && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl"
+              >
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="text-sm font-medium text-red-800 mb-1">
+                      Submission Failed
+                    </h4>
+                    <p className="text-sm text-red-600">{submitError}</p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+            
+            <div onChange={handleFormChange}>
+              <PlayerForm
+                token={token}
+                onSubmit={handlePlaySubmit}
+                isLoading={isLoading}
+              />
+            </div>
           </motion.div>
 
           {/* Features */}

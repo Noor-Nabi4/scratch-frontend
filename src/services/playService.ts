@@ -30,12 +30,51 @@ api.interceptors.response.use(
   (error: AxiosError) => {
     console.error('API Response Error:', error.response?.data || error.message)
     
-    if (error.response?.data && typeof error.response.data === 'object' && 'error' in error.response.data) {
-      const errorData = error.response.data as { error: { message: string } }
-      throw new Error(errorData.error.message)
+    // Handle different error response formats
+    if (error.response?.data) {
+      const data = error.response.data as any
+      
+      // Handle nested error object with message (your API format)
+      if (data.error && data.error.message) {
+        throw new Error(data.error.message)
+      }
+      
+      // Handle direct message
+      if (data.message) {
+        throw new Error(data.message)
+      }
+      
+      // Handle validation errors
+      if (data.errors && Array.isArray(data.errors)) {
+        throw new Error(data.errors.join(', '))
+      }
+      
+      // Handle success: false format
+      if (data.success === false && data.error) {
+        if (typeof data.error === 'string') {
+          throw new Error(data.error)
+        }
+        if (data.error.message) {
+          throw new Error(data.error.message)
+        }
+      }
     }
     
-    throw new Error(error.message || 'An unexpected error occurred')
+    // Handle specific HTTP status codes
+    switch (error.response?.status) {
+      case 400:
+        throw new Error('Invalid request. Please check your input.')
+      case 401:
+        throw new Error('Unauthorized access.')
+      case 403:
+        throw new Error('Access denied.')
+      case 404:
+        throw new Error('Resource not found.')
+      case 500:
+        throw new Error('Server error. Please try again later.')
+      default:
+        throw new Error(error.message || 'An unexpected error occurred')
+    }
   }
 )
 

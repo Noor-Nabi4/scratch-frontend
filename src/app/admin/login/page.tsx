@@ -1,14 +1,15 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { motion } from 'framer-motion'
-import { Lock, Mail, Eye, EyeOff, Shield } from 'lucide-react'
+import { Lock, Mail, Shield } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { adminService } from '@/services/adminService'
+import InputField from '@/components/ui/InputField'
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -20,24 +21,40 @@ type LoginFormData = z.infer<typeof loginSchema>
 export default function AdminLoginPage() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
+  const [loginError, setLoginError] = useState<string | null>(null)
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
   })
 
+  // Clear login error when user starts typing
+  const watchedEmail = watch('email')
+  const watchedPassword = watch('password')
+  
+  useEffect(() => {
+    if (loginError && (watchedEmail || watchedPassword)) {
+      setLoginError(null)
+    }
+  }, [watchedEmail, watchedPassword, loginError])
+
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true)
+    setLoginError(null) // Clear previous errors
+    
     try {
       await adminService.login(data)
       toast.success('Login successful!')
       router.push('/admin/dashboard')
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Login failed')
+      console.error('Login error:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Login failed. Please check your credentials.'
+      setLoginError(errorMessage)
+      toast.error(errorMessage)
     } finally {
       setIsLoading(false)
     }
@@ -65,62 +82,46 @@ export default function AdminLoginPage() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="card p-8"
         >
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* Email */}
-            <div className="space-y-2">
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email Address
-              </label>
-              <div className="relative">
-                <input
-                  {...register('email')}
-                  type="email"
-                  id="email"
-                  placeholder="Enter your email"
-                  className={`input ${errors.email ? 'input-error' : ''}`}
-                />
-                <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-                  <Mail className="w-5 h-5 text-gray-400" />
-                </div>
-                {errors.email && (
-                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                    <span className="text-error-500 text-sm">!</span>
-                  </div>
-                )}
-              </div>
-              {errors.email && (
-                <p className="text-sm text-error-600">{errors.email.message}</p>
-              )}
-            </div>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
+            {/* Login Error Display */}
+            {loginError && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-4 bg-red-50 border border-red-200 rounded-xl"
+              >
+                <p className="text-sm text-red-600 font-medium">{loginError}</p>
+              </motion.div>
+            )}
+            
+            {/* Email Field */}
+            <InputField
+              {...register('email')}
+              type="email"
+              id="email"
+              label="Email Address"
+              placeholder="Enter your email"
+              leftIcon={<Mail className="w-5 h-5" />}
+              error={errors.email?.message}
+              disabled={isLoading}
+              autoComplete="email"
+              size="md"
+            />
 
-            {/* Password */}
-            <div className="space-y-2">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  {...register('password')}
-                  type={showPassword ? 'text' : 'password'}
-                  id="password"
-                  placeholder="Enter your password"
-                  className={`input pr-12 ${errors.password ? 'input-error' : ''}`}
-                />
-                <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-                  <Lock className="w-5 h-5 text-gray-400" />
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
-              </div>
-              {errors.password && (
-                <p className="text-sm text-error-600">{errors.password.message}</p>
-              )}
-            </div>
+            {/* Password Field */}
+            <InputField
+              {...register('password')}
+              type="password"
+              id="password"
+              label="Password"
+              placeholder="Enter your password"
+              leftIcon={<Lock className="w-5 h-5" />}
+              showPasswordToggle
+              error={errors.password?.message}
+              disabled={isLoading}
+              autoComplete="current-password"
+              size="md"
+            />
 
             {/* Submit Button */}
             <motion.button
