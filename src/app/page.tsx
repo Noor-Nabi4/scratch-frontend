@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Sparkles, Gift, Smartphone, AlertCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
@@ -109,7 +110,8 @@ function HomePageContent() {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-r from-primary-600 to-secondary-600 rounded-lg flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-white" />
+                {/* <Sparkles className="w-5 h-5 text-white" /> */}
+                <Image src="/logo.jpeg" alt="Logo" width={32} height={32} />
               </div>
               <h1 className="text-xl font-bold text-gradient">
                 {process.env.NEXT_PUBLIC_APP_NAME || 'Scratch & Win'}

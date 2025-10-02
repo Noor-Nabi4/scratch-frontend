@@ -4,7 +4,7 @@ import React, { forwardRef, useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
 import { motion } from 'framer-motion'
 
-export interface InputFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputFieldProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
   label?: string
   error?: string
   leftIcon?: React.ReactNode
