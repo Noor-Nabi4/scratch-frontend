@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { PlaySearchResult } from '@/types/play'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://scratch-backend-production.up.railway.app'
 
 const api = axios.create({
   baseURL: API_BASE_URL,
